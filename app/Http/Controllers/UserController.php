@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+
+class UserController extends Controller
+{
+    // Display a listing of the resource.
+    public function index()
+    {
+        $users=User::all();
+         return view('user.index',compact('users'));
+    }
+
+    // Show the form for creating a new resource.
+    public function create()
+    {
+        return view('user.create');
+    }
+
+     //Store the specified resource from storage
+    public function store(StoreUserRequest $request)
+    {
+        $user=new user();
+        $user->name=$request->name;
+        $user->email=$request->email;
+        $user->password=$request->password;
+        $user->role=$request->role;
+        $user->save();
+        return redirect()->route('user.create')->with('success','User is Saving Successful');
+    }
+
+     //Show the specified resource from storage
+    public function show($id)
+    {
+        //
+    }
+    
+    //Remove the specified resource from storage
+    public function edit($id)
+    {
+        $user=User::Find($id);
+        if($user){
+            return view('user.edit',compact('user'))->with('edit','User is Editing Successful');
+        }
+    }
+
+    // Update the specified resource in storage
+    public function update(UpdateUserRequest $request, $id)
+    {
+        $user=User::find($id);
+        if($user){
+            $user->name=$request->name;
+            $user->email=$request->email;
+            $user->password=$request->password;
+            $user->role=$request->role;
+            $user->update();
+            return redirect()->route('user.index')->with('update','user is Updating Successful');
+        }
+    }
+    
+    //Remove the specified resource from storage
+    public function destroy($id)
+    {
+       $user=User::Find($id);
+       if($user){
+        $user->delete();
+        return redirect()->route('user.index')->with('delete','User is Deleting Successful');
+       }
+    }
+}
